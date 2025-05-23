@@ -23,30 +23,55 @@ found_date = 0
 found_desc = 0
 found_achievements = 0
 desc_found =0
-df = pd.DataFrame(columns=["Title", "Company", "Desc", "Accomplishments", "Start Date", "End Date"])
-for para in doc.paragraphs[:50]:
+section = ''
+df = pd.DataFrame(columns=["Section","Title", "Company", "Desc", "Accomplishments", "Start Date", "End Date"])
+for para in doc.paragraphs:
     print(f"Style: {para.style.name} | Text: {para.text}")
-    #print(para.text)
-    if desc_found:
-        desc = para.text
-        desc_found = 0
-    if "Bullet List" in para.style.name:
-        new_row = {"Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
-        # Append the row
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+    if "Heading" in para.style.name:
+        section = para.text
+    if section == "Experience":
+        #print(para.text)
+        if desc_found:
+            desc = para.text
+            desc_found = 0
+        if "Bullet List" in para.style.name:
+            new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
+            # Append the row
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
-    for run in para.runs:
-        if run.bold:
-            text = run.text.strip()
-            if text:  # Ignore empty strings
-                title = text
-                list = re.sub(r'\t+','|',para.text[len(text)+2:]).split('|')
-                company=list[0]
-                start,end=list[1].split('–')
-                desc_found = 1
-                break
+        for run in para.runs:
+            if run.bold:
+                text = run.text.strip()
+                if text:  # Ignore empty strings
+                    title = text
+                    list = re.sub(r'\t+','|',para.text[len(text)+2:]).split('|')
+                    company=list[0]
+                    start,end=list[1].split('–')
+                    desc_found = 1
+                    break
+    # if section == "Education":
+    #     #print(para.text)
+    #     if desc_found:
+    #         desc = para.text
+    #         desc_found = 0
+    #     if "Bullet List" in para.style.name:
+    #         new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
+    #         # Append the row
+    #         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
-print(df.head(50))
+    #     for run in para.runs:
+    #         if run.bold:
+    #             text = run.text.strip()
+    #             if text:  # Ignore empty strings
+    #                 title = text
+    #                 print(text)
+    #                 list = re.sub(r'\t+','|',para.text[len(text)+2:]).split('|')
+    #                 company=list[0]
+    #                 start,end=list[1].split('–')
+    #                 desc_found = 1
+    #                 break
+
+print(df.head(70))
 
 df.to_excel(r"C:\Users\mikay\OneDrive\Documents\Resume to Tableau\resume_data.xlsx", index=False)
 #Second Attempt
