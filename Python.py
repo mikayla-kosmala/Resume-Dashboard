@@ -38,7 +38,6 @@ for para in doc.paragraphs:
             new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
             # Append the row
             df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-
         for run in para.runs:
             if run.bold:
                 text = run.text.strip()
@@ -49,27 +48,57 @@ for para in doc.paragraphs:
                     start,end=list[1].split('–')
                     desc_found = 1
                     break
-    # if section == "Education":
-    #     #print(para.text)
-    #     if desc_found:
-    #         desc = para.text
-    #         desc_found = 0
-    #     if "Bullet List" in para.style.name:
-    #         new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
-    #         # Append the row
-    #         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-
-    #     for run in para.runs:
-    #         if run.bold:
-    #             text = run.text.strip()
-    #             if text:  # Ignore empty strings
-    #                 title = text
-    #                 print(text)
-    #                 list = re.sub(r'\t+','|',para.text[len(text)+2:]).split('|')
-    #                 company=list[0]
-    #                 start,end=list[1].split('–')
-    #                 desc_found = 1
-    #                 break
+    if section == "Projects":
+        for run in para.runs:
+            print(f"Text: '{run.text}' | Bold: {run.bold} | Italic: {run.italic}")
+            text = run.text.strip()
+            if run.bold and found_title==0:
+                if text:  # Ignore empty strings
+                    title = text
+                    print('Title: ', title)
+                    found_title = 1
+            if run.italic and found_desc==0:
+                text = run.text.strip()
+                if text:
+                    desc = text
+                    print('Desc: ', desc)
+                    found_desc = 1
+            if  not run.bold and not run.italic and not ("Heading" in para.style.name) and text and found_company and found_desc: 
+                print(text)
+                list = re.sub(r'\t+','|',para.text[len(text)+2:]).split('|')
+                print(list)
+                start,end=list[1].split('–')
+                new_row = {"Section": section, "Title": 'Student', "Company": company[:-1], "Desc": desc, "Accomplishments":'', "Start Date":start, "End Date":end}
+                # Append the row
+                df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+                found_company = 0
+                found_desc = 0
+    if section == "Education":
+        for run in para.runs:
+            print(f"Text: '{run.text}' | Bold: {run.bold} | Italic: {run.italic}")
+            text = run.text.strip()
+            if run.bold and found_company==0:
+                if text:  # Ignore empty strings
+                    company = text
+                    print('Company: ', company)
+                    found_company = 1
+            if run.italic and found_desc==0:
+                text = run.text.strip()
+                if text:
+                    desc = text
+                    print('Desc: ', desc)
+                    found_desc = 1
+            if  not run.bold and not run.italic and not ("Heading" in para.style.name) and text and found_company and found_desc: 
+                print(text)
+                list = re.sub(r'\t+','|',para.text[len(text)+2:]).split('|')
+                print(list)
+                start,end=list[1].split('–')
+                new_row = {"Section": section, "Title": 'Student', "Company": company[:-1], "Desc": desc, "Accomplishments":'', "Start Date":start, "End Date":end}
+                # Append the row
+                df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+                found_company = 0
+                found_desc = 0
+                
 
 print(df.head(70))
 
