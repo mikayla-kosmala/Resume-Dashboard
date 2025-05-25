@@ -2,6 +2,7 @@ from docx import Document
 import string
 import re
 import pandas as pd
+from datetime import datetime
 
 translator = str.maketrans('', '', string.punctuation)
 # Load your resume
@@ -35,6 +36,8 @@ for para in doc.paragraphs:
             desc = para.text
             desc_found = 0
         if "Bullet List" in para.style.name:
+            if end == " Current":
+                end = datetime.today().strftime("%b %Y")
             new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
             # Append the row
             df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
@@ -43,14 +46,18 @@ for para in doc.paragraphs:
                 text = run.text.strip()
                 if text:  # Ignore empty strings
                     title = text
-                    list = re.sub(r'\t+','|',para.text[len(text)+2:]).split('|')
+                    list = re.sub(r'\t+','|',para.text[len(text)+1:]).split('|')
                     company=list[0]
                     start,end=list[1].split('–')
                     desc_found = 1
                     break
     if section == "Projects":
         if desc_found:
-            desc = para.text
+            desc = para.text.split('|')[1:]
+            start= para.text.split('|')[0]
+            end = start
+            if '-' in start:
+                start,end= start.split('-')
             desc_found = 0
         if "Bullet List" in para.style.name:
             new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
@@ -64,7 +71,6 @@ for para in doc.paragraphs:
                     list = re.sub(r'\t+','|',para.text[len(text)+2:]).split('|')
                     company=list[0]
                     print(list)
-                    #start,end=list[1].split('–')
                     desc_found = 1
                     break
     if section == "Education":
