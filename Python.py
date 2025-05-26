@@ -36,8 +36,8 @@ for para in doc.paragraphs:
             desc = para.text
             desc_found = 0
         if "Bullet List" in para.style.name:
-            if end == " Current":
-                end = datetime.today().strftime("%b %Y")
+            # if end == " Current":
+            #     end = datetime.today().strftime("%b %Y")
             new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
             # Append the row
             df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
