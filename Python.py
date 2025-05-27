@@ -25,7 +25,9 @@ found_desc = 0
 found_achievements = 0
 desc_found =0
 section = ''
-df = pd.DataFrame(columns=["Section","Title", "Company", "Desc", "Accomplishments", "Start Date", "End Date"])
+resume_df = pd.DataFrame(columns=["Section","Title", "Company", "Desc", "Accomplishments", "Start Date", "End Date"])
+skills_df = pd.DataFrame(columns=["Skill","Level"])
+personal_df = pd.DataFrame(columns=["Section", "Information","Interest Level","Links"])
 for para in doc.paragraphs:
     print(f"Style: {para.style.name} | Text: {para.text}")
     if "Heading" in para.style.name:
@@ -40,7 +42,7 @@ for para in doc.paragraphs:
             #     end = datetime.today().strftime("%b %Y")
             new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
             # Append the row
-            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+            resume_df = pd.concat([resume_df, pd.DataFrame([new_row])], ignore_index=True)
         for run in para.runs:
             if run.bold:
                 text = run.text.strip()
@@ -62,7 +64,7 @@ for para in doc.paragraphs:
         if "Bullet List" in para.style.name:
             new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
             # Append the row
-            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+            resume_df = pd.concat([resume_df, pd.DataFrame([new_row])], ignore_index=True)
         for run in para.runs:
             if run.bold:
                 text = run.text.strip()
@@ -70,17 +72,17 @@ for para in doc.paragraphs:
                     title = text
                     list = re.sub(r'\t+','|',para.text[len(text)+2:]).split('|')
                     company=list[0]
-                    print(list)
+                    #print(list)
                     desc_found = 1
                     break
     if section == "Education":
         for run in para.runs:
-            print(f"Text: '{run.text}' | Bold: {run.bold} | Italic: {run.italic}")
+            #print(f"Text: '{run.text}' | Bold: {run.bold} | Italic: {run.italic}")
             text = run.text.strip()
             if run.bold and found_company==0:
                 if text:  # Ignore empty strings
                     company = text
-                    print('Company: ', company)
+                    #print('Company: ', company)
                     found_company = 1
             if run.italic and found_desc==0:
                 text = run.text.strip()
@@ -89,20 +91,41 @@ for para in doc.paragraphs:
                     print('Desc: ', desc)
                     found_desc = 1
             if  not run.bold and not run.italic and not ("Heading" in para.style.name) and text and found_company and found_desc: 
-                print(text)
+                #print(text)
                 list = re.sub(r'\t+','|',para.text[len(text)+2:]).split('|')
-                print(list)
+                #print(list)
                 start,end=list[1].split('–')
                 new_row = {"Section": section, "Title": 'Student', "Company": company[:-1], "Desc": desc, "Accomplishments":'', "Start Date":start, "End Date":end}
                 # Append the row
-                df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+                resume_df = pd.concat([resume_df, pd.DataFrame([new_row])], ignore_index=True)
                 found_company = 0
                 found_desc = 0
-                
+    if section == "Skills" and para.text != 'Skills':
+            list = para.text.split('\n')
+            for item in list:
+                print('item ',item)
+                if para.text:
+                    group = item.split(':')
+                    level = group[0]
+                    skills = group[1].split('·')
+                    print(skills)
+                    for skill in skills:
+                        print(skill)
+                        new_row = {"Skill": skill, "Level": level}
+                        skills_df = pd.concat([skills_df, pd.DataFrame([new_row])], ignore_index=True)
+    if section == "Interests"and para.text != 'Interests':
+        if para.text:
+            #link = para.text.split(' ')[-1]
+            interest_level=para.text.split(' ')[-1]
+            information=' '.join(para.text.split(' ')[:-1])
+            new_rows = [{"Section":section, "Information":information,"Interest Level":interest_level,"Links":"",'Path':1},{"Section":section, "Information":information,"Interest Level":interest_level,"Links":"",'Path':270}]
+            personal_df = pd.concat([personal_df, pd.DataFrame(new_rows)], ignore_index=True)
 
-print(df.head(70))
 
-df.to_excel(r"C:\Users\mikay\OneDrive\Documents\Resume to Tableau\resume_data.xlsx", index=False)
+#print(df.head(70))
+personal_df.to_excel(r"C:\Users\mikay\OneDrive\Documents\Resume to Tableau\personal_data.xlsx", index=False)
+resume_df.to_excel(r"C:\Users\mikay\OneDrive\Documents\Resume to Tableau\resume_data.xlsx", index=False)
+skills_df.to_excel(r'C:\Users\mikay\OneDrive\Documents\Resume to Tableau\skills_data.xlsx', index=False)
 #Second Attempt
 # for para in doc.paragraphs:
 #     print(f"Style: {para.style.name} | Text: {para.text}")
