@@ -51,14 +51,14 @@ section = ''
 resume_df = pd.DataFrame(columns=["Section","Title", "Company", "Desc", "Accomplishments", "Start Date", "End Date"])
 skills_df = pd.DataFrame(columns=["Skill","Level"])
 personal_df = pd.DataFrame(columns=["Section", "Information","Interest Level","Links","Path"])
-new_rows = [{"Section":'Personal', "Information":'Resume',"Interest Level":'',"Links":'https://docs.google.com/document/d/1RBk_Fle9WjYZ7EhKHDxFFaYTrSlERNQK/edit?usp=sharing&ouid=100832385938879723557&rtpof=true&sd=true','Path':""}]
+new_rows = [{"Section":'Personal', "Information":'Resume',"Interest Level":'',"Links":'https://docs.google.com/document/d/1ehoNrqLzMcSuB2BzAyix7t51HYPdDZ7a/edit?usp=sharing&ouid=100832385938879723557&rtpof=true&sd=true','Path':""}]
 personal_df = pd.concat([personal_df, pd.DataFrame(new_rows)], ignore_index=True)
 for para in doc.paragraphs:
-    #print(f"Style: {para.style.name} | Text: {para.text}")
+    
     if "Heading" in para.style.name:
         section = para.text
     if section == '' and 'Mikayla.Kosmala' in para.text:
-        items = print(get_hyperlinks_from_para(para))
+        print(get_hyperlinks_from_para(para))
         for label, url in get_hyperlinks_from_para(para): 
             if ':' in label:
                 information, interest_level = label.split(':')
@@ -89,15 +89,14 @@ for para in doc.paragraphs:
                     desc_found = 1
                     break
     if section == "Projects":
+        print(f"Style: {para.style.name} | Text: {para.text}")
         if desc_found:
-            desc = para.text.split('|')[1:]
-            start= para.text.split('|')[0]
-            end = start
-            if '-' in start:
-                start,end= start.split('-')
+            start, end = para.text.split('|')[0].split(' – ')
+            desc, url = get_hyperlinks_from_para(para)[0]
             desc_found = 0
         if "Bullet List" in para.style.name:
-            new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end}
+            new_row = {"Section": section, "Title": title, "Company": company, "Desc": desc, "Accomplishments":para.text, "Start Date":start, "End Date":end,"Link":url}
+            print(new_row)
             # Append the row
             resume_df = pd.concat([resume_df, pd.DataFrame([new_row])], ignore_index=True)
         for run in para.runs:
