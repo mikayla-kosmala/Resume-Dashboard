@@ -1,0 +1,40 @@
+Action items
+separate your code into files
+    Is there supposed to be a purpose?
+
+separate your code into functions
+
+create a class for your object
+    
+place into new file,
+
+
+
+general rule of thumb
+
+once is fine, twice is okay, three times is a warning, four times is definitely a refactor
+
+
+comment your code as if someone were to read it as a note from an author about a book. 
+    
+don't explain it, the code already does that
+instead leave higher level comments
+if you use explanatory comments you will neglect good naming and good refactoring
+if you trust comments you'll find yourself making assumptions about things that might not be true anymore,
+,
+comments are pretty rare tbh,
+rm comments that are commented out code,
+,
+,
+
+
+li 160 - 162 + li 13
+this only works for you, make it a dynamic route and create the folder/route automatically
+
+li 68
+spread out array
+spread out object
+place each obj property on new line with comma at end
+    
+do this for all objects
+might be limited in python
