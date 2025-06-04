@@ -59,7 +59,7 @@ def add_experience(resume_df, section, para, title, company, start_date, end_dat
                     break
     return resume_df, section, para, title, company, start_date, end_date, desc, desc_found
 
-def add_projects():
+def add_projects(section, para):
     if section == "Projects":
         if desc_found:
             start, end = para.text.split('|')[0].split(' – ')
