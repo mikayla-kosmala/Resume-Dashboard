@@ -137,7 +137,7 @@ for para in doc.paragraphs:
     if section == "Skills" and para.text != 'Skills':
             list = para.text.split('\n')
             for item in list:
-                #print('item ',item)
+                print('item ',item)
                 if para.text:
                     group = item.split(':')
                     level = group[0]
