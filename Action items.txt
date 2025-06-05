@@ -1,8 +1,9 @@
+"""
 Action items
 separate your code into files
     Is there supposed to be a purpose?
 
-separate your code into functions
+X separate your code into functions
 
 create a class for your object
     
@@ -38,3 +39,4 @@ place each obj property on new line with comma at end
     
 do this for all objects
 might be limited in python
+"""

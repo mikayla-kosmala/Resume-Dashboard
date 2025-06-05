@@ -1,9 +1,20 @@
 #Importing Libraries
+
+# for initialize_sqlite_db
+import sqlite3
+
+
 from docx.oxml.ns import qn #qn for get_hyperlinks_from_para
 
 # for add_experience
 import re 
 import pandas as pd 
+
+def initialize_sqlite_db():
+    # Connect (creates the file if it doesn't exist)
+    conn = sqlite3.connect('resume_data.db')
+    cursor = conn.cursor()
+
 
 def get_hyperlinks_from_para(para):
     #initalize hyperlinks variable output
@@ -186,9 +197,11 @@ def add_interests(personal_df, section, para):
         # Extracting the interest level ("20/100") as the last word
         interest_level=para.text.split(' ')[-1]
 
-        # Construct new row to add to the DataFrame
+        # Construct new row to add to the DataFrame 
+        # Path is for the interest graph in Tableau
         new_row.append([{"Section":section, "Information":information,"Interest Level":interest_level,"Links":"",'Path':1},{"Section":section, "Information":information,"Interest Level":interest_level,"Links":"",'Path':270}])
 
     # Appending new row DataFrame
     personal_df = pd.concat([personal_df, pd.DataFrame(new_row)], ignore_index=True)
+
     return personal_df
