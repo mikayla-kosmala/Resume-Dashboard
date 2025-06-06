@@ -1,8 +1,8 @@
 #Importing Libraries
+import os
 
 # for initialize_sqlite_db
 import sqlite3
-
 
 from docx.oxml.ns import qn #qn for get_hyperlinks_from_para
 
@@ -10,10 +10,25 @@ from docx.oxml.ns import qn #qn for get_hyperlinks_from_para
 import re 
 import pandas as pd 
 
-def initialize_sqlite_db():
-    # Connect (creates the file if it doesn't exist)
-    conn = sqlite3.connect('resume_data.db')
-    cursor = conn.cursor()
+def sqlite_db(df, db_name, table_name, db_location):
+    # Set your desired directory (db_location)
+    folder_path = os.path.expanduser(f"~{db_location}")
+
+    # Create it if it doesn't exist
+    os.makedirs(folder_path, exist_ok=True)  
+
+    # Build the full path to the database
+    db_path = os.path.join(folder_path, f"{db_name}.db")
+
+    # Create connection
+    conn = sqlite3.connect(db_path)
+
+    # Replace data in table if exists
+    df.to_sql(table_name, conn, if_exists="replace", index=False)
+
+    # Close connection
+    conn.close()
+    return
 
 
 def get_hyperlinks_from_para(para):

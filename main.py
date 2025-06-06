@@ -4,7 +4,7 @@ import re
 import pandas as pd
 from datetime import datetime
 from lxml import etree
-from utils import get_hyperlinks_from_para, define_section, add_experience, add_interests, add_skills, add_education, add_projects
+from utils import get_hyperlinks_from_para, define_section, add_experience, add_interests, add_skills, add_education, add_projects, sqlite_db
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
 # Access the relationships
 
@@ -34,6 +34,16 @@ skills_df = pd.DataFrame(columns=["Skill","Level"])
 personal_df = pd.DataFrame(columns=["Section", "Information","Interest Level","Links","Path"])
 new_rows = [{"Section":'Personal', "Information":'Resume',"Interest Level":'',"Links":'https://docs.google.com/document/d/1ehoNrqLzMcSuB2BzAyix7t51HYPdDZ7a/edit?usp=sharing&ouid=100832385938879723557&rtpof=true&sd=true','Path':""}]
 personal_df = pd.concat([personal_df, pd.DataFrame(new_rows)], ignore_index=True)
+
+
+lines = [para.text.strip() for para in doc.paragraphs if para.text.strip() != '']
+
+# Recombine with real line breaks to preserve spacing
+full_text = '\n'.join(lines)a
+
+# Now split by blank lines
+sections = full_text.strip().split('\n\n')
+
 for para in doc.paragraphs:
     #section = define_section(para)
     #resume_df = add_experience(section=='Experience', para)
@@ -42,7 +52,21 @@ for para in doc.paragraphs:
     #resume_df = add_education(section=='Education',para)
     #skills_df = add_skills(skills_df, section =="Skills", para)
     #personal_df = add_interests(personal_df, section in ["Interests", ""], para)
+"""
+Excel Version
+"""
+personal_df.to_excel(r"C:\Users\mikay\OneDrive\Documents\Resume to Tableau\personal_data.xlsx", index=False)
+resume_df.to_excel(r"C:\Users\mikay\OneDrive\Documents\Resume to Tableau\resume_data.xlsx", index=False)
+skills_df.to_excel(r'C:\Users\mikay\OneDrive\Documents\Resume to Tableau\skills_data.xlsx', index=False)
 
-#personal_df.to_excel(r"C:\Users\mikay\OneDrive\Documents\Resume to Tableau\personal_data.xlsx", index=False)
-#resume_df.to_excel(r"C:\Users\mikay\OneDrive\Documents\Resume to Tableau\resume_data.xlsx", index=False)
-#skills_df.to_excel(r'C:\Users\mikay\OneDrive\Documents\Resume to Tableau\skills_data.xlsx', index=False)
+"""
+DB version
+
+db_name = "resume_data"
+db_location = "\Documents\Github\Resume-Dashboard"
+
+sqlite_db(resume_df, db_name, "experience", db_location)
+sqlite_db(personal_df, db_name, "personal", db_location)
+sqlite_db(resume_df, db_name, "skills", db_location)
+
+"""
