@@ -12,6 +12,7 @@ from docx.opc.constants import RELATIONSHIP_TYPE as RT
 doc = Document(r'C:\Users\mikay\OneDrive\Documents\Resume to Tableau\Running Resume.docx')
 rels = doc.part.rels
 
+""" Call Initalizer for Classes and pass it the raw text of the experience section (aka our gameplan on lin 48 - li 52) """
 # Print all the paragraphs
 #for para in doc.paragraphs:
 #  print(para.text)
@@ -39,13 +40,19 @@ personal_df = pd.concat([personal_df, pd.DataFrame(new_rows)], ignore_index=True
 lines = [para.text.strip() for para in doc.paragraphs if para.text.strip() != '']
 
 # Recombine with real line breaks to preserve spacing
-full_text = '\n'.join(lines)a
+full_text = '\n'.join(lines)
 
 # Now split by blank lines
 sections = full_text.strip().split('\n\n')
 
+"""
+First for loop finds the section
+Second for loop creates the list of experience objects
+Third for loop extracts objects to dataframe for excel output
+"""
+
 for para in doc.paragraphs:
-    #section = define_section(para)
+    section = define_section(para)
     #resume_df = add_experience(section=='Experience', para)
     print(para.text)
     #resume_df = add_projects(section=='Projects',para)

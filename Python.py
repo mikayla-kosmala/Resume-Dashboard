@@ -68,6 +68,7 @@ for para in doc.paragraphs:
             new_rows = [{"Section":'Personal', "Information":information,"Interest Level":interest_level,"Links":url,'Path':""}]
             personal_df = pd.concat([personal_df, pd.DataFrame(new_rows)], ignore_index=True)
     if section == "Experience":
+        print(f"Text: '{para.text}'")
         #print(para.text)
         if desc_found:
             desc = para.text
@@ -79,6 +80,7 @@ for para in doc.paragraphs:
             # Append the row
             resume_df = pd.concat([resume_df, pd.DataFrame([new_row])], ignore_index=True)
         for run in para.runs:
+            print(f"Text: '{run.text}'")
             if run.bold:
                 text = run.text.strip()
                 if text:  # Ignore empty strings

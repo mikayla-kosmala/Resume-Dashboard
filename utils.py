@@ -58,7 +58,8 @@ def get_hyperlinks_from_para(para):
 def define_section(para):
     if "Heading" in para.style.name:
         section = para.text
-    return section
+        return section
+    return ''
 
 def add_experience(resume_df, section, para, title, company, start_date, end_date, desc, desc_found):                  
     #initalizing desc_found to 
