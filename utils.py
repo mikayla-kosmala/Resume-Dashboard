@@ -6,6 +6,7 @@ import sqlite3
 
 from docx.oxml.ns import qn #qn for get_hyperlinks_from_para
 
+from docx import Document
 # for add_experience
 import re 
 import pandas as pd 
@@ -60,6 +61,14 @@ def define_section(para):
         section = para.text
         return section
     return ''
+
+def find_sections(section_list, doc):
+    sections = {}
+    for i in section_list:
+        sections[f"{i}"] = ""
+    for para in doc.paragraphs:
+        if define_section(para) in section_list:
+            sections[f"{section_list.index(define_section(para))}"]+='\n'+para.text
 
 def add_experience(resume_df, section, para, title, company, start_date, end_date, desc, desc_found):                  
     #initalizing desc_found to 
