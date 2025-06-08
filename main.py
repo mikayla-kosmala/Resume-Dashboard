@@ -13,7 +13,14 @@ import Experience as ex
 doc = Document(r'C:\Users\mikay\OneDrive\Documents\Resume to Tableau\Running Resume.docx')
 rels = doc.part.rels
 
-""" Call Initalizer for Classes and pass it the raw text of the experience section (aka our gameplan on lin 48 - li 52) """
+""" Call Initalizer for Classes and pass it the raw text of the experience section
+
+First for loop finds the section
+Second for loop creates the list of experience objects
+Third for loop extracts objects to dataframe for excel output
+
+# resume_df = pd.DataFrame(columns=["Section","Title", "Company", "Description", "Accomplishments", "Start Date", "End Date"])
+"""
 section = ''
 section_list = ["Experience","Education","Projects"]
 sections = {}
@@ -22,19 +29,34 @@ for i in section_list:
 for para in doc.paragraphs:
     if define_section(para)!='':
         section = define_section(para)
-    if section in section_list: 
+    if section in section_list and para.text != section: 
         sections[f"{section_list[section_list.index(section)]}"]+='\n'+para.text 
-        #print(define_section(para),para.text)
+        print(section,para.text)
 
+print(sections['Education'])
+list_of_experience = []
 for i in sections:
-    sections[f"{i}"] = sections[f"{i}"].split('\n\n')
-    #print(sections[f"{i}"][0],'\n\n')
-print(sections['Experience'][1])
+    if i == 'Education':
+        #print(sections[f"{i}"])
+        sections[f"{i}"] = sections[f"{i}"].split('\n')[1:]
+        #print(sections[f"{i}"])
+    else:
+        sections[f"{i}"] = sections[f"{i}"].split('\n\n')
+    for item in sections[f"{i}"]:
+        experience = ex.Experience(i,item)
+        experience = experience.parse()
+        list_of_experience.append(experience)
 
-job_class = ex.Experience()
+resume_df = pd.DataFrame([experience.to_dict for experience in list_of_experience])
 
-for job in sections['Experience']:
-    ex.Experience(job)
+
+
+
+
+# job_class = ex.Experience()
+
+# for job in sections['Experience']:
+#     ex.Experience(job)
 
 
 
@@ -71,11 +93,7 @@ for job in sections['Experience']:
 # # Now split by blank lines
 # sections = full_text.strip().split('\n\n')
 
-# """
-# First for loop finds the section
-# Second for loop creates the list of experience objects
-# Third for loop extracts objects to dataframe for excel output
-# """
+
 
 # for para in doc.paragraphs:
 #     section = define_section(para)

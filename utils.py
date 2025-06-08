@@ -62,6 +62,9 @@ def define_section(para):
         return section
     return ''
 
+def clean_leading_trailing_whitespace(text_list):
+    return [line.strip() for line in text_list]
+
 def find_sections(section_list, doc):
     sections = {}
     for i in section_list:
