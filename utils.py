@@ -121,7 +121,7 @@ def add_projects(section, para):
                     break
     return
 
-def add_education():
+def add_education(section,para):
     if section == "Education":
         for run in para.runs:
             text = run.text.strip()
