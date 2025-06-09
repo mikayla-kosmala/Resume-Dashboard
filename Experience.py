@@ -1,5 +1,5 @@
 from utils import clean_leading_trailing_whitespace
-
+import random
 class Experience:
     """
     title
@@ -30,16 +30,20 @@ class Experience:
         return self
 
     def parse(self):
+
+        # Name of variable = -1
+        # Pairs of what needs to be known parsing should be its own function
         if self.section == 'Experience':
             lines = [line.strip() for line in self.raw_text.strip().split('\n') if line.strip()]
             title_company = lines[0].split('\t')[0].split(',')
-            self.title = ','.join(title_company[:-1])
+            self.title = ','.join(title_company[:-1]) # Define Magic Number at the beginning of parse
             self.company = title_company[-1]
             self.start_date, self.end_date = lines[0].split('\t')[-1].split(' – ')
             self.description = lines[1]
             for i in lines[2:]:
                 if i:
                     self.accomplishments.append(i)
+
         if self.section == 'Projects':
             lines = [line.strip() for line in self.raw_text.strip().split('\n') if line.strip()]
             title_company = lines[0].split(', ')
@@ -50,6 +54,7 @@ class Experience:
             for i in lines[2:]:
                 if i:
                     self.accomplishments.append(i)
+                    
         if self.section == 'Education':
             lines = [line.strip() for line in self.raw_text.strip().split('\n') if line!='']
             title_company = lines[0].split('\t')[0].split(',')
@@ -60,7 +65,7 @@ class Experience:
 
     def to_dict(self):
         if self.section == 'Education':
-            return[{
+            return [{
             "Section": self.section,
             "Title": self.title, 
             "Company": self.company,
