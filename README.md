@@ -28,3 +28,9 @@ This project extracts structured information from a text-based resume and visual
 - docx
 - sqlite3 (optional)
 - Tableau Public
+
+## 🛠️ Notes for Future Me
+
+- Python 3.x
+- pandas
+- docx
