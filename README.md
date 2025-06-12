@@ -29,8 +29,8 @@ This project extracts structured information from a text-based resume and visual
 - sqlite3 (optional)
 - Tableau Public
 
-## 🛠️ Notes for Future Me
+## 🧪 Notes for Future Me
 
-- Python 3.x
-- pandas
-- docx
+- URLs in Dashboard aren't active
+- Add School Achievements
+- In Second Version finish Skills and Personal Information Data Gathering
